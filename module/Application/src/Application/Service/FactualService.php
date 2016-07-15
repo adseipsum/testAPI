@@ -1,6 +1,14 @@
-<?php 
+<?php
+namespace Application\Service;
 
-class Service {
+class FactualService implements APIServiceInterface{
+	
+	public function getConnection(){
+		$factual = new \Factual("3pjEV3xag2GUkyHYc6VSJV7WZLaSknKQR0y6w0Rm","FCg36esMf2KCadOcZpt6G7DOlOk5oeq68leXgggY");
+		
+		return $factual;
+	}
+	
 	public function getRemoteCategories() {
 		return array(
 				array('externalId' => 'unique id from source', 'categoryName' => 'name from source'),
@@ -39,7 +47,7 @@ class Service {
 								'customerRating' => '',
 								'priceRating' => '',
 								'websiteUrl' => '',
-		    ‚internationalPhoneNumber’ => '',
+		    					'internationalPhoneNumber' => '',
                     'hoursOfOperation' => array(
                         array(
                             "open" => array(

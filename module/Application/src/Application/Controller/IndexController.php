@@ -10,12 +10,16 @@
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
+use Application\Service\FactualService;
 use Zend\View\Model\ViewModel;
 
 class IndexController extends AbstractActionController
 {
+	
     public function indexAction()
     {
+    	$factualService = new FactualService(); 
+    	var_dump($factualService->getConnection());
         return new ViewModel();
     }
 }
