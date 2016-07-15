@@ -3,6 +3,8 @@ namespace Application\Service;
 
 class FactualService implements APIServiceInterface{
 	
+	private $factual;
+	
 	public function __construct(){
 		$this->factual = $this->getConnection();
 	}
@@ -13,17 +15,18 @@ class FactualService implements APIServiceInterface{
 	}
 	
 	public function getRemoteCategories() {
-		$query = new \FactualQuery;
-		$query->limit(10);
-		$query->only("id,category");
-		$res = $factual->fetch("places", $query);
-
-		return $res->getData();
+	    $query = new \FactualQuery;  
+	    $query->field("category_ids");
+	    $query->only('category_labels, category_ids');
+	    $res = $this->factual->fetch("places", $query);
+	    
+	    $resultArray = array();
+		foreach($res->getData() as $key => $category){
+			$resultArray[$key]['externalId'] = array_shift($category['category_ids']);
+			$resultArray[$key]['categoryName'] = array_shift($category['category_labels'][0]);
+		}
 		
-		return array(
-				array('externalId' => 'unique id from source', 'categoryName' => 'name from source'),
-				array('externalId' => 'unique id from source', 'categoryName' => 'name from source'),
-		);
+		return $resultArray;
 	}
 	
 	public function getRemoteTraits() {

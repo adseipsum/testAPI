@@ -19,7 +19,7 @@ class IndexController extends AbstractActionController
     public function indexAction()
     {
     	$factualService = new FactualService(); 
-    	var_dump($factualService->getConnection());
+    	var_dump($factualService->getRemoteCategories());
         return new ViewModel();
     }
 }
