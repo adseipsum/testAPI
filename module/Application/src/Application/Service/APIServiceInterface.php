@@ -3,7 +3,5 @@
 
  interface APIServiceInterface
  {
- 	public function getConnection(){
- 		
- 	}
+ 	public function getConnection();
  }

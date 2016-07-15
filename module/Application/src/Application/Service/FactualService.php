@@ -3,13 +3,23 @@ namespace Application\Service;
 
 class FactualService implements APIServiceInterface{
 	
+	public function __construct(){
+		$this->factual = $this->getConnection();
+	}
+	
 	public function getConnection(){
 		$factual = new \Factual("3pjEV3xag2GUkyHYc6VSJV7WZLaSknKQR0y6w0Rm","FCg36esMf2KCadOcZpt6G7DOlOk5oeq68leXgggY");
-		
 		return $factual;
 	}
 	
 	public function getRemoteCategories() {
+		$query = new \FactualQuery;
+		$query->limit(10);
+		$query->only("id,category");
+		$res = $factual->fetch("places", $query);
+
+		return $res->getData();
+		
 		return array(
 				array('externalId' => 'unique id from source', 'categoryName' => 'name from source'),
 				array('externalId' => 'unique id from source', 'categoryName' => 'name from source'),
