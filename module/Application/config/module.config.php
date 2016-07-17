@@ -60,6 +60,9 @@ return array(
         'aliases' => array(
             'translator' => 'MvcTranslator',
         ),
+    	'invokables' => array(
+    			'Application\Service\APIServiceInterface' => 'Application\Service\FactualAPIService'
+    	)
     ),
     'translator' => array(
         'locale' => 'en_US',
@@ -72,8 +75,8 @@ return array(
         ),
     ),
     'controllers' => array(
-        'invokables' => array(
-            'Application\Controller\Index' => 'Application\Controller\IndexController'
+        'factories' => array(
+            'Application\Controller\Console' => 'Application\Controller\Factory\ConsoleControllerFactory'
         ),
     ),
     'view_manager' => array(
@@ -94,9 +97,19 @@ return array(
     ),
     // Placeholder for console routes
     'console' => array(
-        'router' => array(
-            'routes' => array(
-            ),
-        ),
-    ),
+			'router' => array(
+					'routes' => array(
+							'get-data' => array(
+									'options' => array(
+											'route' => 'get data <offset> <count>',
+											'defaults' => array(
+													'__NAMESPACE__' => 'Application\Controller',
+													'controller' => 'console',
+													'action' => 'get-data'
+											),
+									),
+							),
+					)
+			)
+	),
 );

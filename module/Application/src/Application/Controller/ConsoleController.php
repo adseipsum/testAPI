@@ -10,16 +10,23 @@
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Application\Service\FactualService;
 use Zend\View\Model\ViewModel;
 
-class IndexController extends AbstractActionController
+class ConsoleController extends AbstractActionController
 {
+	private $factualService;
 	
-    public function indexAction()
+	public function __construct($factualService){
+		$this->factualService = $factualService;
+	}
+    
+    public function getDataAction()
     {
-    	$factualService = new FactualService(); 
-    	var_dump($factualService->getRemoteData());
-        return new ViewModel();
+    	$request = $this->getRequest();
+    	
+    	$offset   = $request->getParam('offset', false);
+    	$count     = $request->getParam('count');
+    	
+    	var_dump($this->factualService->getRemoteData($offset, $count));
     }
 }

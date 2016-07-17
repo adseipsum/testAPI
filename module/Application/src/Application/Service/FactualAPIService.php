@@ -1,23 +1,24 @@
 <?php
 namespace Application\Service;
 
-class FactualService implements APIServiceInterface{
+use \Factual;
+use \FactualQuery;
+
+class FactualAPIService implements APIServiceInterface{
 	
-	private $factual;
+	private static $factual;
 	
-	public function __construct(){
-		$this->factual = $this->getConnection();
-	}
-	
-	public function getConnection(){
-		$factual = new \Factual('3pjEV3xag2GUkyHYc6VSJV7WZLaSknKQR0y6w0Rm','FCg36esMf2KCadOcZpt6G7DOlOk5oeq68leXgggY');
-		return $factual;
+	public function initConnection(){
+		if(static::$factual === null){
+			static::$factual = new Factual('3pjEV3xag2GUkyHYc6VSJV7WZLaSknKQR0y6w0Rm', 'FCg36esMf2KCadOcZpt6G7DOlOk5oeq68leXgggY');
+		}
+		return static::$factual;
 	}
 	
 	public function getRemoteCategories() {
-	    $query = new \FactualQuery;  
+	    $query = new FactualQuery;  
 	    $query->only('category_labels, category_ids');
-	    $res = $this->factual->fetch('places', $query);
+	    $res = static::$factual->fetch('places', $query);
 	    
 	    $resultArray = array();
 		foreach($res->getData() as $key => $category){
@@ -29,9 +30,9 @@ class FactualService implements APIServiceInterface{
 	}
 	
 	public function getRemoteTraits() {
-		$query = new \FactualQuery;
+		$query = new FactualQuery;
 		$query->only('traits');
-		$res = $this->factual->fetch('places', $query);
+		$res = static::$factual->fetch('places', $query);
 		 
 		return array(
 				array("externalId" => 1, "traitName" => 'delivery'),
@@ -46,13 +47,14 @@ class FactualService implements APIServiceInterface{
 	
 	public function getRemoteData($offset = 0, $count = 50) {
 		
-		$query = new \FactualQuery;
+		$query = new FactualQuery;
 		$query->offset($offset);
 		$query->limit($count);
 		$query->includeRowCount();
-		$res = $this->factual->fetch('restaurants-us', $query);
+		$res = static::$factual->fetch('restaurants-us', $query);
 
 		$records = array();
+		//iterating data as object rather than array to make code looks clean
 		foreach(json_decode($res->getDataAsJSON()) as $key => $data){
 			$records[$key] = array(
 						'externalId' => property_exists($data, 'factual_id') ? $data->factual_id : '',
@@ -69,24 +71,21 @@ class FactualService implements APIServiceInterface{
 						'priceRating' => property_exists($data, 'priceRating') ? $data->priceRating : '',
 						'websiteUrl' => property_exists($data, 'website') ? $data->website : '',
 						'internationalPhoneNumber' => property_exists($data, 'tel') ? $data->tel : '',
-						'hoursOfOperation' => property_exists($data, 'hours') ? $data->hours : ''
 					);
-			
-// 					$currentDay = 0;
-// 					foreach($data->hours as $day){
-// 						var_dump($data->hours ); die;
-// 						$records[$key]['hoursOfOperation'][] = array(
-// 								"open" => array(
-// 										"day" => $currentDay,
-// 										"time" => !empty($day[0][1]) ? $day[0][1] : ''
-// 								),
-// 								"close" => array(
-// 										"day" => $currentDay,
-// 										"time" => !empty($day[1][1]) ? $day[1][1] : ''
-// 								)
-// 						);
-// 						$currentDay++;
-// 					}
+
+					foreach($data->hours as $dayName => $day){
+						$dayNumber = date('N', strtotime($dayName));
+						$records[$key]['hoursOfOperation'][] = array(
+								"open" => array(
+										"day" => $dayNumber,
+										"time" => !empty($day[0][0]) ? $day[0][0] : ''
+								),
+								"close" => array(
+										"day" => $dayNumber,
+										"time" => !empty($day[0][1]) ? $day[0][1] : ''
+								)
+						);
+					}
 		}
 		
 		return array(
