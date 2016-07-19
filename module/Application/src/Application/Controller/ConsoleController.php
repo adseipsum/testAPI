@@ -27,6 +27,16 @@ class ConsoleController extends AbstractActionController
     	$offset   = $request->getParam('offset', false);
     	$count     = $request->getParam('count');
     	
-    	var_dump($this->factualService->getRemoteData($offset, $count));
+    	var_dump($this->factualService->getRemoteCategories());
+    }
+    
+    public function getCategoriesAction()
+    {
+    	var_dump($this->factualService->getRemoteCategories());
+    }
+    
+    public function getTraitsAction()
+    {
+    	var_dump($this->factualService->getRemoteTraits());
     }
 }

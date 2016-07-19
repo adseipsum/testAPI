@@ -16,33 +16,31 @@ class FactualAPIService implements APIServiceInterface{
 	}
 	
 	public function getRemoteCategories() {
-	    $query = new FactualQuery;  
-	    $query->only('category_labels, category_ids');
-	    $res = static::$factual->fetch('places', $query);
-	    
-	    $resultArray = array();
-		foreach($res->getData() as $key => $category){
-			$resultArray[$key]['externalId'] = array_shift($category['category_ids']);
-			$resultArray[$key]['categoryName'] = array_shift($category['category_labels'][0]);
-		}
+		$categories = json_decode(file_get_contents('https://raw.githubusercontent.com/Factual/places/master/categories/factual_taxonomy.json'));
+		$categoriesArray = array();
+		$counter = 0;
 		
-		return $resultArray;
+		if($categories) foreach($categories as $key => $category){
+			$categoriesArray[$counter]['externalId'] = $key;
+			$categoriesArray[$counter]['categoryName'] = $category->labels->en;
+			$counter++;
+		}
+
+		return $categoriesArray;
 	}
 	
 	public function getRemoteTraits() {
-		$query = new FactualQuery;
-		$query->only('traits');
-		$res = static::$factual->fetch('places', $query);
-		 
-		return array(
-				array("externalId" => 1, "traitName" => 'delivery'),
-				array("externalId" => 2, "traitName" => 'take out'),
-				array("externalId" => 3, "traitName" => 'catering'),
-				array("externalId" => 4, "traitName" => 'vegetarian'),
-				array("externalId" => 5, "traitName" => 'vegan'),
-				array("externalId" => 6, "traitName" => 'gluten'),
-				//include here cousine types U fetch - if posisble fetch remote id if not assign by own and do hard code
-		);
+		$responce = json_decode(file_get_contents('https://raw.githubusercontent.com/Factual/places/master/restaurants/factual_cuisines.json'));
+		$cuisineArray = array();
+		$counter = 0;
+		
+		if($responce->cuisine) foreach($responce->cuisine as $key => $cuisine){
+			$cuisineArray[$counter]['externalId'] = $key;
+			$cuisineArray[$counter]['traitName'] = $cuisine;
+			$counter++;
+		}
+
+		return $cuisineArray;
 	}
 	
 	public function getRemoteData($offset = 0, $count = 50) {

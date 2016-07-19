@@ -109,6 +109,26 @@ return array(
 											),
 									),
 							),
+							'get-categories' => array(
+									'options' => array(
+											'route' => 'get categories',
+											'defaults' => array(
+													'__NAMESPACE__' => 'Application\Controller',
+													'controller' => 'console',
+													'action' => 'get-categories'
+											),
+									),
+							),
+							'get-traits' => array(
+									'options' => array(
+											'route' => 'get traits',
+											'defaults' => array(
+													'__NAMESPACE__' => 'Application\Controller',
+													'controller' => 'console',
+													'action' => 'get-traits'
+											),
+									),
+							),
 					)
 			)
 	),
