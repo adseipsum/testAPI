@@ -4,10 +4,24 @@ namespace Application\Service;
 use \Factual;
 use \FactualQuery;
 
+/**
+ * 
+ * @author Oleksiy Perepelytsya
+ *
+ */
 class FactualAPIService implements APIServiceInterface{
 	
+	/**
+	 * @var \Factual
+	 */
 	private static $factual;
 	
+	/**
+	 * {@inheritDoc}
+	 * @see \Application\Service\APIServiceInterface::initConnection()
+	 * 
+	 *  @return \Factual
+	 */
 	public function initConnection(){
 		if(static::$factual === null){
 			static::$factual = new Factual('3pjEV3xag2GUkyHYc6VSJV7WZLaSknKQR0y6w0Rm', 'FCg36esMf2KCadOcZpt6G7DOlOk5oeq68leXgggY');
@@ -15,6 +29,9 @@ class FactualAPIService implements APIServiceInterface{
 		return static::$factual;
 	}
 	
+	/**
+	 * @return array[]
+	 */
 	public function getRemoteCategories() {
 		$categories = json_decode(file_get_contents('https://raw.githubusercontent.com/Factual/places/master/categories/factual_taxonomy.json'));
 		$categoriesArray = array();
@@ -29,6 +46,9 @@ class FactualAPIService implements APIServiceInterface{
 		return $categoriesArray;
 	}
 	
+	/**
+	 * @return array[]
+	 */
 	public function getRemoteTraits() {
 		$responce = json_decode(file_get_contents('https://raw.githubusercontent.com/Factual/places/master/restaurants/factual_cuisines.json'));
 		$cuisineArray = array();
@@ -43,6 +63,13 @@ class FactualAPIService implements APIServiceInterface{
 		return $cuisineArray;
 	}
 	
+	/**
+	 * 
+	 * @param number $offset
+	 * @param number $count
+	 * 
+	 * @return array
+	 */
 	public function getRemoteData($offset = 0, $count = 50) {
 		
 		$query = new FactualQuery;

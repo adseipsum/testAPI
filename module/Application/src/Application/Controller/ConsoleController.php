@@ -1,25 +1,27 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @author Oleksiy Perepelytsya
  */
 
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
 
 class ConsoleController extends AbstractActionController
 {
 	private $factualService;
 	
+	/**
+	 * 
+	 * @param Application/Controller/FactualAPIService
+	 */
 	public function __construct($factualService){
 		$this->factualService = $factualService;
 	}
     
+	/**
+	 * @return array
+	 */
     public function getDataAction()
     {
     	$request = $this->getRequest();
@@ -30,11 +32,17 @@ class ConsoleController extends AbstractActionController
     	var_dump($this->factualService->getRemoteCategories());
     }
     
+    /**
+     * @return array[]
+     */
     public function getCategoriesAction()
     {
     	var_dump($this->factualService->getRemoteCategories());
     }
     
+    /**
+     * @return array[]
+     */
     public function getTraitsAction()
     {
     	var_dump($this->factualService->getRemoteTraits());
